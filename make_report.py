@@ -1,10 +1,5 @@
-"""Builds report.tex and compiles it to report.pdf with pdflatex.
-
-Numbers are filled in from outputs/summary.json, outputs/validation.json and
-outputs/cv_results_*.csv. Run after train.py, make_plots.py and validate.py.
-Needs a LaTeX installation (pdflatex) with booktabs; otherwise compile
-report.tex on Overleaf.
-"""
+# Fills the numbers into report.tex and compiles it with pdflatex.
+# (No LaTeX installed? Upload report.tex and the plots folder to Overleaf.)
 import json
 import shutil
 import subprocess

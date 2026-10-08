@@ -1,4 +1,4 @@
-"""Extra report figures: out-of-fold predicted vs actual for the chosen models."""
+# predicted vs actual plot for the report
 import json
 import matplotlib
 matplotlib.use("Agg")

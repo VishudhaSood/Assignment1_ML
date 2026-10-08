@@ -1,18 +1,6 @@
-"""
-Polynomial regression in PyTorch.
-
-A polynomial of total degree d in p variables is a *linear* model over the set
-of all terms  x1^a1 * x2^a2 * ... * xp^ap  with  a1 + ... + ap <= d.
-So the "network" is a single nn.Linear layer on top of a fixed polynomial
-feature map, and its weights are found with the exact ridge (L2) solution.
-
-Basis choice: inputs live in [-1, 1], so instead of raw powers x^k we use
-Legendre polynomials P_k(x). They span exactly the same function space
-(any polynomial of degree <= d is a combination of P_0..P_d), so the model is
-still plain polynomial regression - but the columns are nearly orthogonal,
-which keeps the linear solve numerically stable at degree 10-20 where raw
-monomials (x^20 vs x^18 ...) are almost collinear.
-"""
+# Polynomial regression in PyTorch.
+# Polynomial = linear model on polynomial terms (nn.Linear on top of the features).
+# Terms use Legendre polynomials (same polynomials as x, x^2, ... but more stable on [-1, 1]).
 from itertools import combinations_with_replacement
 from collections import Counter
 
@@ -23,7 +11,7 @@ torch.set_default_dtype(torch.float64)
 
 
 def exponent_list(n_vars: int, degree: int) -> torch.Tensor:
-    """All exponent tuples (a1..ap) with sum <= degree. Row 0 is the constant."""
+    # all exponent tuples with sum <= degree (row 0 is the constant term)
     exps = []
     for d in range(degree + 1):
         for combo in combinations_with_replacement(range(n_vars), d):
@@ -35,7 +23,7 @@ def exponent_list(n_vars: int, degree: int) -> torch.Tensor:
 
 
 def legendre_table(x: torch.Tensor, degree: int) -> torch.Tensor:
-    """P_0..P_degree evaluated per column. x: (n, p) -> (n, p, degree+1)."""
+    # Legendre polynomials P_0..P_degree for every column
     P = [torch.ones_like(x), x]
     for k in range(1, degree):
         # Bonnet recursion: (k+1) P_{k+1} = (2k+1) x P_k - k P_{k-1}
@@ -62,7 +50,7 @@ class PolynomialFeatures(nn.Module):
 
 
 class PolynomialRegressor(nn.Module):
-    """y = w . phi(x) + b, fitted with closed-form ridge regression."""
+    # ridge regression with a closed-form solution
 
     def __init__(self, n_vars: int, degree: int, lam: float = 0.0):
         super().__init__()
@@ -94,15 +82,8 @@ class PolynomialRegressor(nn.Module):
 
 
 class SparsePolynomialRegressor(nn.Module):
-    """
-    Same polynomial model, fitted with an L1 (Lasso) penalty instead of L2:
-        min_w  1/(2n) ||y - Phi w||^2 + alpha * ||w||_1
-    solved with FISTA (accelerated proximal gradient) in PyTorch.
-    L1 drives most coefficients to exactly zero, so only the polynomial terms
-    the data actually needs survive. Optional `refit=True` ("relaxed Lasso")
-    then re-estimates the surviving terms with a tiny ridge penalty to remove
-    the shrinkage bias L1 introduces.
-    """
+    # Same model as above but fitted with an L1 (Lasso) penalty using FISTA.
+    # relaxed Lasso (refit=True): Lasso picks the terms, then they are refit with a tiny ridge penalty.
 
     def __init__(self, n_vars, degree, alpha=1e-2, refit=False, max_iter=20000, tol=1e-9, standardize=False):
         super().__init__()
@@ -176,7 +157,7 @@ def r2(y, yhat):
 
 
 def kfold_cv(X, y, degree, strength, method="ridge", k=5, seed=0):
-    """Mean validation MSE over k folds (same fold split for every setting)."""
+    # mean validation MSE over k folds
     g = torch.Generator().manual_seed(seed)
     perm = torch.randperm(len(y), generator=g)
     folds = perm.chunk(k)

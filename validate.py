@@ -1,19 +1,6 @@
-"""
-Validation / diagnostics for the final models.
-
-The real test labels are hidden, so we estimate test performance in three ways:
-  1. Hold-out test : train on 80% of the training rows, score on the other 20%
-                     (repeated over 10 random splits).
-  2. Repeated 5-fold CV : 5-fold cross-validation repeated with 3 different shuffles.
-  3. Edge check    : many test points lie on the edge of the input box (x = +-1).
-                     We measure the error on training points that are on the edge
-                     too, and re-weight the CV error so its mix of edge/non-edge
-                     points matches the test file ("test-like MSE").
-It also checks the prediction files (row count, NaNs, value range) and that
-re-running the final model reproduces them exactly.
-
-Usage:  python validate.py      (writes outputs/validation.json and plots/residuals.png)
-"""
+# Checks the final models: 80/20 hold-out test, repeated 5-fold CV,
+# error on edge points (x = +-1) and checks on the prediction files.
+# Run: python validate.py
 import json
 
 import matplotlib
@@ -41,12 +28,12 @@ def load(var):
 
 
 def n_edges(X):
-    """How many inputs of each row sit exactly on the edge (+-1)."""
+    # number of inputs in each row that are exactly +-1
     return (X.abs() == 1).sum(1)
 
 
 def edge_weights(X, Xt):
-    """Weight each training row so the edge-count mix matches the test file."""
+    # weights so the share of edge points matches the test file
     k, kt = n_edges(X), n_edges(Xt)
     top = int(k.max())                     # test may have more edges than any train row
     k, kt = k.clamp(max=top), kt.clamp(max=top)

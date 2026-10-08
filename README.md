@@ -1,11 +1,11 @@
-# Polynomial Regression Assignment — IMT2024067
+# Polynomial Regression Assignment - IMT2024067
 
 Predicting `y` with **polynomial regression only**, for two datasets, written in **PyTorch**.
 
 | Problem | Inputs | Chosen model | CV MSE | CV R² | Hold-out MSE / R² |
 |---|---|---|---|---|---|
-| var1 — steam turbine | 6 | degree 5, relaxed Lasso (α = 0.01), 105 of 462 terms | 0.353 | 0.965 | 0.352 / 0.964 |
-| var2 — thermal reservoir | 3 | degree 8, Ridge (λ = 0.001), 165 terms | 0.301 | 0.993 | 0.296 / 0.993 |
+| var1 - steam turbine | 6 | degree 5, relaxed Lasso (α = 0.01), 105 of 462 terms | 0.353 | 0.965 | 0.352 / 0.964 |
+| var2 - thermal reservoir | 3 | degree 8, Ridge (λ = 0.001), 165 terms | 0.301 | 0.993 | 0.296 / 0.993 |
 
 Submission files: `outputs/IMT2024067_pred_var1.csv`, `outputs/IMT2024067_pred_var2.csv`
 Report: `report.pdf`
@@ -48,4 +48,4 @@ python make_plots.py
 python make_report.py  # needs pdflatex; or upload report.tex + plots/ to Overleaf
 ```
 
-Results are deterministic (fixed random seeds), so re-running gives the same prediction files.
+Random seeds are fixed, so re-running gives the same prediction files.

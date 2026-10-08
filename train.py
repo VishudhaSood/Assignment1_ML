@@ -1,17 +1,6 @@
-"""
-Degree / regularisation search + final training + test inference.
-
-For each problem:
-  1. 5-fold cross-validation over every degree 1..cap, for three ways of
-     fitting the polynomial coefficients:
-        ridge          (L2 penalty, closed form)
-        lasso          (L1 penalty, FISTA)
-        relaxed_lasso  (L1 to pick terms, then near-unpenalised refit)
-  2. Pick the (degree, method, strength) with the lowest CV MSE.
-  3. Refit on all training rows, predict the test file, save CSV.
-
-Usage:  python train.py            (writes outputs/ and plots/)
-"""
+# Searches over degree, method and penalty strength with 5-fold CV,
+# picks the lowest CV MSE, retrains on all rows and writes the test predictions.
+# Run: python train.py
 import json
 import os
 import time
@@ -45,7 +34,7 @@ def folds_for(n):
 
 
 def cv_all(X, y, degree, cfg):
-    """CV MSE for every (method, strength) at one degree. Returns {(method, s): mse}."""
+    # CV MSE for every (method, strength) at one degree
     folds = folds_for(len(y))
     res = {}
     for i in range(K):

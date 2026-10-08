@@ -1,8 +1,5 @@
 __pycache__/
 *.pyc
-.ipynb_checkpoints/
 report.aux
 report.log
 report.out
-PUSH_TO_GITHUB.bat
-push_to_github.sh
