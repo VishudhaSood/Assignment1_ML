@@ -32,10 +32,9 @@ polyreg.py       the model: polynomial features + nn.Linear, Ridge and Lasso fit
 train.py         degree / method / penalty search, final training, writes prediction CSVs
 validate.py      hold-out test, repeated CV, edge check, checks the prediction files
 make_plots.py    predicted-vs-actual plot
-make_report.py   writes report.tex and compiles it to report.pdf (pdflatex)
 outputs/         predictions, all CV results (cv_results_*.csv), summary.json, validation.json
 plots/           CV-vs-degree curves, predicted-vs-actual, residuals
-report.tex/.pdf  write-up (LaTeX)
+report.pdf       write-up
 ```
 
 ## Run it
@@ -45,7 +44,6 @@ pip install -r requirements.txt
 python train.py        # full search + predictions (~25 min on a laptop CPU; var1 high degrees are slow)
 python validate.py     # ~1 min
 python make_plots.py
-python make_report.py  # needs pdflatex; or upload report.tex + plots/ to Overleaf
 ```
 
 Random seeds are fixed, so re-running gives the same prediction files.
